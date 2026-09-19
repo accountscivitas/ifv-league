@@ -42,12 +42,21 @@
         started: r[C_GAMES] ? r[C_STARTED] : "",
         games: r[C_GAMES] || "",
         ppg: r[C_GAMES] ? Math.round(r[C_POINTS] / r[C_GAMES] * 10) / 10 : "",
+        perd: perDollar(r[C_SALARY], r[C_GAMES] ? r[C_POINTS] : 0),
         group: "contract",
         transient: !!r[C_TRANSIENT]
       };
       byKey[key(r[C_TEAM], r[C_PLAYER], r[C_SEASON])] = row;
       out.push(row);
     });
+
+    // Points per dollar. Blank rather than zero when nothing was paid or
+    // nothing was scored: a $0 row is not infinitely good value and a
+    // 0-point row is not 0.00 per dollar, it is a question with no answer.
+    function perDollar(amount, points) {
+      if (!amount || !points) return "";
+      return Math.round(points / amount * 100) / 100;
+    }
 
     d.drafts.forEach(function (r) {
       var hit = byKey[key(r[D_TEAM], r[D_PLAYER], r[D_SEASON])];
@@ -80,6 +89,7 @@
         started: r[D_GAMES] ? r[D_STARTED] : "",
         games: r[D_GAMES] || "",
         ppg: r[D_GAMES] ? Math.round(r[D_POINTS] / r[D_GAMES] * 10) / 10 : "",
+        perd: perDollar(r[D_PRICE], r[D_GAMES] ? r[D_POINTS] : 0),
         group: "draft",
         transient: false
       });
@@ -218,7 +228,8 @@
        ["started", r.started],
        ["points", r.points],
        ["games", r.games],
-       ["ppg", r.ppg]].forEach(function (pair, i) {
+       ["ppg", r.ppg],
+       ["perd", r.perd]].forEach(function (pair, i) {
         var td = document.createElement("td");
         if (i === 0) {
           var a = document.createElement("a");
@@ -254,6 +265,17 @@
       : "";
   }
 
+  function markSort(key) {
+    Array.prototype.forEach.call(
+      document.querySelectorAll("#results thead th"), function (o) {
+        if (key && o.getAttribute("data-k") === key) {
+          o.setAttribute("data-dir", sortAsc ? "up" : "down");
+        } else {
+          o.removeAttribute("data-dir");
+        }
+      });
+  }
+
   function wireSorting() {
     Array.prototype.forEach.call(
       document.querySelectorAll("#results thead th"), function (th) {
@@ -263,11 +285,7 @@
           var k = th.getAttribute("data-k");
           sortAsc = (k === sortKey) ? !sortAsc : false;
           sortKey = k;
-          Array.prototype.forEach.call(
-            document.querySelectorAll("#results thead th"), function (o) {
-              o.removeAttribute("data-dir");
-            });
-          th.setAttribute("data-dir", sortAsc ? "up" : "down");
+          markSort(k);
           render();
         }
         th.addEventListener("click", go);
@@ -305,6 +323,25 @@
       el("cut").checked = false;
       el("minp").value = 0;
       el("ming").value = 0;
+      sortKey = null;
+      markSort(null);
+      render();
+    });
+    // "Most valuable": the one preset the retired Value page had that this
+    // table did not. It sets a $5 floor and sorts by points per dollar,
+    // descending.
+    //
+    // THE FLOOR IS THE WHOLE PRESET. Without it the answer is a list of $1
+    // keepers for ever -- a dollar in the denominator makes any useful
+    // season look miraculous -- and "most valuable" stops distinguishing
+    // anything. $5 is the same floor the Drafts statistics use, for the
+    // same reason and stated the same way.
+    el("bestvalue").addEventListener("click", function () {
+      el("minp").value = 5;
+      el("ming").value = 1;
+      sortKey = "perd";
+      sortAsc = false;
+      markSort("perd");
       render();
     });
     wireSorting();

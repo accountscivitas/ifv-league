@@ -82,6 +82,45 @@ fieldset.chk label { display:inline-block; margin:.15rem .7rem .15rem 0;
 .seasonnav.bottom { margin:2.5rem 0 0; padding-top:1rem;
   border-top:1px solid var(--rule); }
 .dim { color:var(--dim); font-weight:400; }
+/* The performance timeline, after a Grand Slam timeline. THE LETTER IS THE
+   DATA; the wash behind it is a second channel and never the only one, which
+   is the fix for the colour grid this replaced. */
+table.timeline { font-variant-numeric:tabular-nums; }
+table.timeline th[scope="row"] { text-align:right; font-weight:600;
+  font-size:.82rem; text-transform:none; letter-spacing:0; color:var(--ink);
+  white-space:nowrap; position:sticky; left:0; background:var(--bg); }
+table.timeline td { text-align:center; font-size:.76rem; font-weight:600;
+  padding:.3rem .22rem; min-width:2.1rem; }
+table.timeline tr:nth-child(even) th[scope="row"] { background:var(--soft); }
+/* ⛔ EVERY MARK RULE IS PREFIXED `table.timeline td`, AND THAT IS LOAD-
+   BEARING, NOT TIDINESS. The zebra rule `tr:nth-child(even) td` scores
+   (0,2,3) and a bare `.tl-c` scores (0,1,0), so the stripe won: champion
+   cells on EVEN ROWS lost their red background and rendered white text on
+   white. Seattle's Feinest showed 3 in the Titles column and three empty
+   boxes where the titles were. Prefixing lifts each mark to (0,2,2), which
+   beats the base stripe (0,1,2) -- and the even-row override for td is
+   gone entirely, because a timeline does not need stripes on top of cells
+   that already carry their own colour. */
+table.timeline td.tl-c   { background:#8a1c1c; color:#fff; }
+table.timeline td.tl-ru  { background:#c96a64; color:#fff; }
+table.timeline td.tl-sf  { background:#e3b7b4; color:#4a1410; }
+table.timeline td.tl-qf  { background:#f2dedc; color:#5c1d18; }
+table.timeline td.tl-out { background:none; color:var(--dim);
+  font-weight:400; }
+table.timeline td.tl-none { background:none; }
+.tl-titles { font-weight:700; color:var(--accent); }
+.timelinekey .tl-key { display:inline-block; min-width:1.9rem;
+  text-align:center; padding:.06rem .3rem; border-radius:3px;
+  font-size:.72rem; font-weight:600; margin-right:.3rem; }
+/* The legend swatches are SPANS, so scoping the mark colours to
+   `table.timeline td` (which the specificity fix had to do) stopped
+   reaching them and the key rendered as plain text beside coloured cells.
+   Same colours, stated once more for the key. */
+.timelinekey .tl-key.tl-c   { background:#8a1c1c; color:#fff; }
+.timelinekey .tl-key.tl-ru  { background:#c96a64; color:#fff; }
+.timelinekey .tl-key.tl-sf  { background:#e3b7b4; color:#4a1410; }
+.timelinekey .tl-key.tl-qf  { background:#f2dedc; color:#5c1d18; }
+.timelinekey .tl-key.tl-out { color:var(--dim); font-weight:400; }
 /* A team name on a stable tint, so the eye can follow one team down a list
    of seventeen seasons. The NAME is inside every chip -- the tint is a
    scanning aid, never the carrier of identity -- which is why twelve of
@@ -103,6 +142,16 @@ ul.bracket li { padding:.3rem 0 .3rem .75rem; border-left:2px solid var(--rule);
   :root { --ink:#e8e8e8; --dim:#9a9a9a; --rule:#333; --accent:#e8867f;
           --bg:#141414; --soft:#1b1b1b; }
   .note { background:#2a2618; border-left-color:#8a7320; }
+  table.timeline td.tl-c   { background:#b4423a; color:#fff; }
+  table.timeline td.tl-ru  { background:#8a3a34; color:#f4dedc; }
+  table.timeline td.tl-sf  { background:#5c2b27; color:#edc9c5; }
+  table.timeline td.tl-qf  { background:#3a211f; color:#d9aba6; }
+  .timelinekey .tl-key.tl-c   { background:#b4423a; color:#fff; }
+  .timelinekey .tl-key.tl-ru  { background:#8a3a34; color:#f4dedc; }
+  .timelinekey .tl-key.tl-sf  { background:#5c2b27; color:#edc9c5; }
+  .timelinekey .tl-key.tl-qf  { background:#3a211f; color:#d9aba6; }
+  table.timeline th[scope="row"] { background:var(--bg); }
+  table.timeline tr:nth-child(even) th[scope="row"] { background:var(--soft); }
   /* The pale tint would glow on a dark page, so each chip carries a dark
      twin computed from the same hue. */
   .teamchip { background:var(--chipdark); }
