@@ -63,6 +63,16 @@
     odds: function (d) {
       return [b(d.t), esc(d.v) + "% " + esc(d.m),
               dim("after week " + esc(d.w))];
+    },
+    // The owner's complaint about the odds chart applies verbatim to any
+    // twelve-lane chart: "you can't hover over any of the teams to see
+    // what the actual percentages were". A line with no readable value is
+    // a shape, not a figure -- so the Elo lanes carry the same three
+    // lines the ladder table below them does.
+    elo: function (d) {
+      return [b(d.t), "Rated " + esc(d.v),
+              dim("peak " + esc(d.p) + " in " + esc(d.ps)
+                  + " \u00b7 low " + esc(d.l) + " in " + esc(d.ls))];
     }
   };
 

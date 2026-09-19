@@ -124,6 +124,15 @@ table.timeline td.tl-qf  { background:var(--tl-qf-bg); color:var(--tl-qf-fg); }
 table.timeline td.tl-out { background:none; color:var(--dim);
   font-weight:400; }
 table.timeline td.tl-none { background:none; }
+/* ⛔ THE SAME SPECIFICITY TRAP AS THE MARK RULES ABOVE, one level down.
+   Every mark is now an <a> to that season's page, and `a { color:accent }`
+   targets the link DIRECTLY while `td.tl-c { color:... }` reaches it only
+   by inheritance -- a direct rule beats an inherited value at any
+   specificity, so a champion's "C" would have gone red-on-red and a
+   semifinalist's "SF" red-on-green. The link takes the cell's own ink, and
+   fills the box so the whole square is the hit target rather than two
+   glyphs in the middle of it. */
+table.timeline td a { color:inherit; display:block; }
 .tl-titles { font-weight:700; color:var(--accent); }
 .timelinekey .tl-key { display:inline-block; min-width:1.9rem;
   text-align:center; padding:.06rem .3rem; border-radius:3px;
@@ -145,6 +154,10 @@ table.timeline td.tl-none { background:none; }
   background:var(--chip); color:var(--ink); }
 .teamchip.lit { outline:2px solid var(--accent); outline-offset:0;
   font-weight:600; }
+/* The chip is an <a> now, so it needs the same hover tell as `.teamref`.
+   `a { color:var(--accent) }` loses to the class above on specificity,
+   which is what keeps the resting chip the page's own ink. */
+.teamchip:hover { color:var(--accent); }
 /* Hovering any franchise reference lights every other mention of that team
    on the page, and tints the rows they sit in. charts.js already did the
    `[data-team]` -> `.lit` half for the season chips; before this the class
