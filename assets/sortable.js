@@ -11,10 +11,16 @@
     var rows = Array.prototype.slice.call(body.rows);
     rows.sort(function (a, b) {
       var x = val(a.cells[index]), y = val(b.cells[index]);
+      // A BLANK CELL SINKS IN BOTH DIRECTIONS, and it used to float to the
+      // top on descending. The old rule ordered blanks after numbers and
+      // then negated the WHOLE comparison for descending, so "sort by most"
+      // led with every row that had no value at all. A blank means "no
+      // figure", and no figure is never the biggest -- so it is parked
+      // outside the reversal rather than inside it.
+      if (x.n === null && y.n !== null) return 1;
+      if (y.n === null && x.n !== null) return -1;
       var r;
       if (x.n !== null && y.n !== null) r = x.n - y.n;
-      else if (x.n !== null) r = -1;
-      else if (y.n !== null) r = 1;
       else r = x.s < y.s ? -1 : x.s > y.s ? 1 : 0;
       return asc ? r : -r;
     });

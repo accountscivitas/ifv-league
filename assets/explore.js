@@ -4,8 +4,17 @@
       C_POINTS = 9, C_GAMES = 10, C_STARTED = 11;
   var D_PLAYER = 0, D_TEAM = 1, D_SEASON = 2, D_PRICE = 3, D_KIND = 4,
       D_POINTS = 5, D_GAMES = 6, D_STARTED = 7;
-  var LIMIT = 300;
+  // 100, not 300 (owner, 2026-09-19). The table is a way IN to a
+  // 2,962-row ledger, not a way to read it: the filters and the
+  // column sort are what answer a question, and the row count under
+  // the table always states how many matched. A longer page just
+  // costs scrolling on the way to the controls.
+  var LIMIT = 100;
   var DATA = null, ROWS = [], sortKey = "season", sortAsc = false;
+  // season -> true for the seasons that have a page. Read once at start-up
+  // from the block the generator writes; empty when absent, which makes
+  // every season render as plain text rather than as a broken link.
+  var SEASON_PAGES = {};
 
   var el = function (id) { return document.getElementById(id); };
 
@@ -251,6 +260,32 @@
             render();
           });
           td.appendChild(a);
+        } else if (pair[0] === "team" && r.tid) {
+          // The FRANCHISE and the SEASON leave the explorer for the pages
+          // that hold them (owner, 2026-09-19). Built here rather than in
+          // Python because these rows exist only at runtime -- the table is
+          // rendered from the payload, so there is no server-side cell to
+          // put an anchor in.
+          //
+          // `teamref` + data-team joins the same hover-highlight every
+          // other page uses, so hovering a franchise here lights its every
+          // other row in the visible table.
+          var ta = document.createElement("a");
+          ta.className = "teamref";
+          ta.setAttribute("data-team", r.team);
+          ta.href = "franchises/" + r.tid + ".html";
+          ta.textContent = r.team;
+          td.appendChild(ta);
+        } else if (pair[0] === "season" && SEASON_PAGES[r.season]) {
+          // ONLY a season that HAS a page. A five-year C contract has real
+          // rows out to 2030 and `seasons/` stops at the season being
+          // played, so linking blind shipped dead links -- and because this
+          // cell is built here at runtime, the site's internal-link test
+          // cannot see them. The list comes from the generator.
+          var sa = document.createElement("a");
+          sa.href = "seasons/" + r.season + ".html";
+          sa.textContent = r.season;
+          td.appendChild(sa);
         } else {
           if (i >= 7) td.className = "num";
           td.textContent = pair[1];
@@ -370,6 +405,14 @@
     // Inline block FIRST: fetch() is blocked by CORS on file:// URLs, so a
     // fetch-only explorer works when published and fails silently when the
     // folder is opened locally.
+    var pages = document.getElementById("season-pages");
+    if (pages && pages.textContent.trim()) {
+      try {
+        JSON.parse(pages.textContent).forEach(function (y) {
+          SEASON_PAGES[y] = true;
+        });
+      } catch (e) { SEASON_PAGES = {}; }
+    }
     var inline = document.getElementById("league-data");
     if (inline && inline.textContent.trim()) {
       // ONLY the parse is guarded. An earlier version wrapped start() too,
