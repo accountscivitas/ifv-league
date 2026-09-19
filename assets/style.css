@@ -129,6 +129,18 @@ table.timeline td.tl-none { background:none; }
   background:var(--chip); color:var(--ink); }
 .teamchip.lit { outline:2px solid var(--accent); outline-offset:0;
   font-weight:600; }
+/* Hovering any franchise reference lights every other mention of that team
+   on the page, and tints the rows they sit in. charts.js already did the
+   `[data-team]` -> `.lit` half for the season chips; before this the class
+   landed on table cells and nothing styled it, so the mechanism was shipped
+   and invisible. The owner asked for it on Trades and Records: "If I hover
+   over one team, it effectively highlights them."
+   The row tint wins over the zebra stripe on specificity -- (0,2,1) against
+   (0,1,2) -- which is the same arithmetic the timeline marks needed. */
+.teamref { color:inherit; }
+.teamref:hover { color:var(--accent); }
+.teamref.lit { color:var(--accent); font-weight:600; }
+tbody tr:has(.teamref.lit) td { background:#fdf4f2; }
 .jump { margin:0 0 1.5rem; font-size:.9rem; line-height:2; }
 .totop { font-size:.62rem; font-weight:400; text-transform:uppercase;
   letter-spacing:.06em; margin-left:.5rem; vertical-align:middle; }

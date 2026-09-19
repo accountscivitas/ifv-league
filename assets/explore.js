@@ -345,6 +345,24 @@
       render();
     });
     wireSorting();
+
+    // A LINK FROM ANOTHER PAGE ARRIVES FILTERED. The records page links a
+    // player by name -- `players.html?q=Josh%20Allen` -- because there is no
+    // per-player page and there should not be: the explorer is a query over
+    // the whole ledger, so 743 static pages would be 743 things to rebuild.
+    //
+    // Seeded BEFORE the first render, not after, or the reader sees the full
+    // 2,755-row table repaint to one player and wonders what he clicked.
+    // Churn and cut rows are shown too, because a reader who followed a link
+    // for one player wants that player's whole record, and the defaults hide
+    // rows he would otherwise silently not be told about.
+    var wanted = (location.search.match(/[?&]q=([^&]*)/) || [])[1];
+    if (wanted) {
+      try { el("q").value = decodeURIComponent(wanted.replace(/\+/g, " ")); }
+      catch (e) { el("q").value = wanted; }
+      el("churn").checked = true;
+      el("cut").checked = true;
+    }
     render();
   }
 
