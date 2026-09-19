@@ -1,0 +1,98 @@
+:root { --ink:#1b1b1b; --dim:#666; --rule:#dcdcdc; --accent:#8a1c1c;
+        --bg:#fff; --soft:#faf9f7; }
+* { box-sizing: border-box; }
+body { margin:0 auto; padding:2rem 1.25rem 4rem; background:var(--bg);
+       color:var(--ink); max-width:64rem;
+       font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,
+            Arial,sans-serif; }
+h1 { font-size:2rem; margin:0 0 .3rem; letter-spacing:-.022em; }
+h2 { font-size:1.15rem; margin:2.4rem 0 .6rem; padding-bottom:.32rem;
+     border-bottom:2px solid var(--rule); letter-spacing:-.01em; }
+h2 small { font-weight:400; color:var(--dim); font-size:.85rem; }
+nav { margin:0 0 2rem; padding-bottom:.9rem; border-bottom:1px solid var(--rule);
+      font-size:.9rem; }
+nav a { margin-right:1.1rem; }
+nav a.ext::after { content:" 97"; font-size:.8em; }
+a { color:var(--accent); text-decoration:none; }
+a:hover { text-decoration:underline; }
+/* Tables scroll rather than overflow: the head-to-head grid is 13 columns
+   and the league reads this on phones. */
+table { border-collapse:collapse; width:100%; margin:.5rem 0 1.2rem;
+        font-size:.92rem; display:block; overflow-x:auto;
+        white-space:nowrap; }
+@media (min-width: 46rem) { table { display:table; white-space:normal; } }
+th, td { text-align:left; padding:.42rem .6rem; border-bottom:1px solid var(--rule); }
+th { font-weight:600; font-size:.74rem; text-transform:uppercase;
+     letter-spacing:.05em; color:var(--dim); }
+tr:nth-child(even) td { background:var(--soft); }
+.sub { color:var(--dim); font-size:.95rem; margin:0 0 1.6rem; }
+.note { background:#fbf7e8; border-left:3px solid #c9a227; padding:.7rem .9rem;
+        margin:1rem 0; font-size:.9rem; }
+footer { margin-top:3.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+         color:var(--dim); font-size:.82rem; }
+th.sortable { cursor:pointer; user-select:none; }
+th.sortable:hover { color:var(--accent); }
+th.sortable[data-dir="up"]::after { content:" 91"; }
+th.sortable[data-dir="down"]::after { content:" 93"; }
+.controls { display:flex; flex-wrap:wrap; gap:.5rem; margin:1rem 0 .75rem; }
+.controls input, .controls select, .controls button {
+  font:inherit; padding:.4rem .55rem; border:1px solid var(--rule);
+  border-radius:4px; background:var(--bg); color:var(--ink); }
+.controls #q { flex:1 1 16rem; min-width:12rem; }
+.controls #minp { width:5.5rem; }
+.controls .minp { display:flex; align-items:center; gap:.35rem;
+  color:var(--dim); font-size:.85rem; }
+.controls button { cursor:pointer; }
+.controls button:hover { border-color:var(--accent); color:var(--accent); }
+.toggles { display:flex; gap:.4rem; margin:.5rem 0 1rem; }
+.toggles button { font:inherit; font-size:.85rem; padding:.3rem .7rem;
+  border:1px solid var(--rule); border-radius:4px; background:var(--bg);
+  color:var(--dim); cursor:pointer; }
+.toggles button.on { border-color:var(--accent); color:var(--accent);
+  font-weight:600; }
+.toc { margin:0 0 1.8rem; font-size:.9rem; line-height:2; }
+/* The rulebook page: a long prose document, so it gets reading measure and
+   room to breathe rather than the dense table styling the rest of the site
+   uses. */
+.toc-list { list-style:none; padding:0; margin:0 0 2.2rem;
+  border-left:2px solid var(--rule); }
+.toc-list li { padding:.18rem 0 .18rem .9rem; font-size:.92rem; }
+.toc-list li.sub-item { padding-left:2rem; font-size:.86rem; }
+.doc { max-width:44rem; }
+.doc h2 { margin:2.4rem 0 .8rem; padding-bottom:.3rem;
+  border-bottom:1px solid var(--rule); }
+.doc h3 { margin:2rem 0 .6rem; }
+.doc h4 { margin:1.5rem 0 .4rem; font-size:1rem; }
+.doc p { margin:0 0 1rem; line-height:1.65; }
+.doc ul { margin:0 0 1.1rem; padding-left:1.3rem; line-height:1.6; }
+.doc li { margin:.2rem 0; }
+.doc blockquote { margin:0 0 1.1rem; padding:.6rem 1rem;
+  border-left:3px solid var(--rule); color:var(--dim); }
+.doc table { margin:0 0 1.4rem; }
+.doc hr { border:0; border-top:1px solid var(--rule); margin:2.4rem 0; }
+.doc code { font-size:.88em; }
+fieldset.chk { border:1px solid var(--rule); border-radius:4px;
+  padding:.3rem .6rem .5rem; margin:0 0 .6rem; }
+fieldset.chk legend { font-size:.72rem; text-transform:uppercase;
+  letter-spacing:.06em; color:var(--dim); padding:0 .3rem; }
+fieldset.chk label { display:inline-block; margin:.15rem .7rem .15rem 0;
+  font-size:.85rem; white-space:nowrap; }
+.seasonnav { display:flex; justify-content:space-between; font-size:.9rem;
+  margin:0 0 1.2rem; }
+.seasonnav.bottom { margin:2.5rem 0 0; padding-top:1rem;
+  border-top:1px solid var(--rule); }
+.dim { color:var(--dim); font-weight:400; }
+.jump { margin:0 0 1.5rem; font-size:.9rem; line-height:2; }
+.totop { font-size:.62rem; font-weight:400; text-transform:uppercase;
+  letter-spacing:.06em; margin-left:.5rem; vertical-align:middle; }
+h2[id] { scroll-margin-top:1rem; }
+.seed { display:inline-block; min-width:1.3rem; color:var(--dim);
+  font-size:.75rem; font-variant-numeric:tabular-nums; }
+ul.bracket { list-style:none; padding-left:0; margin:.25rem 0 1rem; }
+ul.bracket li { padding:.3rem 0 .3rem .75rem; border-left:2px solid var(--rule);
+  margin-bottom:.2rem; }
+@media (prefers-color-scheme: dark) {
+  :root { --ink:#e8e8e8; --dim:#9a9a9a; --rule:#333; --accent:#e8867f;
+          --bg:#141414; --soft:#1b1b1b; }
+  .note { background:#2a2618; border-left-color:#8a7320; }
+}
