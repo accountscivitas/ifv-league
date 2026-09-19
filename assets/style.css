@@ -358,6 +358,25 @@ figure.chartwrap figcaption { color:var(--dim); font-size:.85rem;
 .pivotpanel .swap { font-variant-numeric:tabular-nums; }
 .pivotpanel .verdict { font-weight:600; }
 .pivotpanel .verdict.title { color:var(--accent); }
+.pivotpanel ol.path { margin:.4rem 0 .6rem; padding-left:1.2rem; }
+.pivotpanel ol.path > li { margin:.35rem 0; }
+.pivotpanel ol.path ul { margin:.2rem 0 .2rem; padding-left:1rem;
+  list-style:none; }
+.pivotpanel .gain { color:var(--c-pos); font-weight:600; }
+/* The tally beside each name: titles won, then titles one decision away.
+   The owner asked for it, and he is right that a reader should not have
+   to count 34px circles to get the sentence the grid is making. */
+.chart .tally { font-size:10px; fill:var(--dim);
+  font-variant-numeric:tabular-nums; }
+/* Filtered-out cells stay in place and recede, rather than vanishing --
+   the grid IS a calendar, and removing cells would reflow it and make
+   the two views impossible to compare. */
+.chart .ghostcell.dim { opacity:.12; pointer-events:none; }
+.ghostkey span { display:inline-block; width:.7rem; height:.7rem;
+  border-radius:50%; vertical-align:-1px; margin-right:.2rem; }
+.ghostkey .key-won { background:var(--accent); }
+.ghostkey .key-lineup { border:2.5px solid var(--c-neg); }
+.ghostkey .key-choice { border:2.5px solid var(--c-pos); }
 /* The dumbbell's connector carries the polarity its two dots already do,
    so the eye reads the GAP rather than hunting between the ends. */
 .chart .connector { stroke-width:3; opacity:.55; }

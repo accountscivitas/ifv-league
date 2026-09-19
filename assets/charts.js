@@ -59,6 +59,10 @@
     },
     place: function (d) {
       return [b(d.t), dim(d.s), esc(d.v)];
+    },
+    odds: function (d) {
+      return [b(d.t), esc(d.v) + "% " + esc(d.m),
+              dim("after week " + esc(d.w))];
     }
   };
 
@@ -189,5 +193,39 @@
     if (!cell) return;
     e.preventDefault();
     showPivot(cell.getAttribute("data-cell"));
+  });
+
+  // ONE CHART, a season at a time. Thirteen charts stacked was thirteen
+  // scrolls to find the one you wanted, and no way to compare two.
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest("[data-odds-season]");
+    if (!btn) return;
+    var want = btn.getAttribute("data-odds-season");
+    Array.prototype.forEach.call(
+      btn.parentNode.querySelectorAll("[data-odds-season]"), function (b) {
+        b.classList.toggle("on", b === btn);
+      });
+    document.querySelectorAll("[data-season-panel]").forEach(function (p) {
+      p.hidden = p.getAttribute("data-season-panel") !== want;
+    });
+  });
+
+  // Lineup changes / matchup choices / both. A title always shows: it is
+  // the thing the ghosts are measured against, and hiding it would leave
+  // a reader counting hollow rings with nothing to compare them to.
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest("[data-ghost-show]");
+    if (!btn) return;
+    var want = btn.getAttribute("data-ghost-show");
+    var group = btn.parentNode;
+    Array.prototype.forEach.call(
+      group.querySelectorAll("[data-ghost-show]"), function (b) {
+        b.classList.toggle("on", b === btn);
+      });
+    document.querySelectorAll(".ghostcell").forEach(function (cell) {
+      var kind = cell.getAttribute("data-ghost");
+      var show = want === "both" || kind === "won" || kind === want;
+      cell.classList.toggle("dim", !show);
+    });
   });
 })();
