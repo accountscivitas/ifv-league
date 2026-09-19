@@ -73,6 +73,18 @@
       return [b(d.t), "Rated " + esc(d.v),
               dim("peak " + esc(d.p) + " in " + esc(d.ps)
                   + " \u00b7 low " + esc(d.l) + " in " + esc(d.ls))];
+    },
+    // A 2.6px mark cannot carry a label, so the tooltip is the only way
+    // to find out WHICH game a mark in a 199-game strip is. Without it
+    // the strip is a texture rather than a record.
+    streak: function (d) {
+      return [b(d.t), esc(d.r) + " " + esc(d.v),
+              dim(esc(d.s) + " week " + esc(d.w))];
+    },
+    spread: function (d) {
+      return [b(d.t), "Median " + esc(d.m),
+              "Middle half " + esc(d.q),
+              dim("range " + esc(d.r) + " over " + esc(d.n) + " games")];
     }
   };
 

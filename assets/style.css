@@ -451,6 +451,26 @@ td.fell { color:var(--c-neg); }
   padding:.25rem .5rem; border:1px solid var(--rule); border-radius:4px;
   background:var(--bg); color:var(--ink); cursor:pointer; }
 .chartfilters label { font-size:.78rem; color:var(--dim); }
+/* --- one row per franchise: the streak strip and the scoring spread ---
+   Both are labelled rows with marks laid along a shared x, so the label
+   style is defined once for the pair.
+
+   ⛔ WON/LOST IS THE `STATUS` IDIOM, NOT A CATEGORICAL ONE. The rule that
+   caps categorical hues at three and forbids colouring by franchise is
+   about IDENTITY; this is a binary state, and it uses the validated
+   POLES of the diverging ramp. Height carries it a second time -- a win
+   mark is twice as tall as a loss -- so the strip still reads in
+   greyscale, in print, and to a reader who cannot separate the hues.
+   Colour is never the only channel. */
+.chart .row-label { font-size:11px; fill:var(--ink); }
+.chart .mark-win { fill:var(--c-pos); }
+.chart .mark-loss { fill:var(--c-neg); opacity:.75; }
+.chartkey i.key-mark-win { background:var(--c-pos); }
+.chartkey i.key-mark-loss { background:var(--c-neg); opacity:.75; }
+.chart .spread-range { stroke:var(--c-mark); stroke-width:1; }
+.chart .spread-box { fill:var(--c-mark); fill-opacity:.3;
+  stroke:var(--c-mark); stroke-width:1; }
+.chart .spread-median { stroke:var(--accent); stroke-width:2.5; }
 @media (prefers-color-scheme: dark) {
   :root {
     --c-pos:#3987e5; --c-mid:#383835; --c-neg:#e66767;
