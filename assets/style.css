@@ -328,12 +328,36 @@ figure.chartwrap figcaption { color:var(--dim); font-size:.85rem;
    dashing reads as "threshold" or "projection" -- applies here too. The
    empty middle already says "this did not happen"; the dash only made a
    9px ring noisy. The guard stays as it is. */
-.chart .ring-won { fill:var(--c-mark); stroke:none; }
-.chart .ring-ghost { fill:none; stroke-width:2.5; }
+/* ⛔ --c-mid IS NEARLY WHITE (#f0efec) -- it is the MIDPOINT of the
+   diverging ramp, not a neutral ink. The choice-ghosts were drawn in it
+   and were invisible on the page: "the red circles you can see, but the
+   other circles you really can't" (owner, on the live site). Every count
+   was right and 195 marks were present and unclipped; a geometry audit
+   cannot see a mark that is the colour of the paper. Use the validated
+   POLES (--c-pos, --c-neg), never the midpoint, for anything that has to
+   be seen. */
+.chart .ring-won { fill:var(--accent); stroke:none; }
+.chart .ring-ghost { fill:none; stroke-width:3; }
 .chart .k-lineup { stroke:var(--c-neg); }
-.chart .k-choice { stroke:var(--c-mid); }
+.chart .k-choice { stroke:var(--c-pos); }
 .chart .cell-none { fill:var(--c-grid); stroke:none; }
-.chart .ring-won:hover, .chart .ring-ghost:hover { stroke-width:3.5; }
+/* A transparent disc over every cell, so the click target is the whole
+   square rather than a 3px stroke. Same trick as .race-hit. */
+.chart .cell-hit { fill:transparent; stroke:none; cursor:pointer; }
+.chart .ghostcell.on .ring-ghost, .chart .ghostcell:hover .ring-ghost {
+  stroke-width:4.5; }
+.chart .ghostcell.on .ring-won, .chart .ghostcell:hover .ring-won {
+  stroke:var(--ink); stroke-width:2; }
+/* The click-revealed detail. Hidden until a cell is chosen, so the page
+   does not open with an arbitrary season's story. */
+.pivotpanel { border:1px solid var(--rule); border-radius:6px;
+  padding:.9rem 1.1rem; margin:.4rem 0 1.6rem; background:var(--soft); }
+.pivotpanel[hidden] { display:none; }
+.pivotpanel h3 { margin:0 0 .3rem; font-size:1rem; }
+.pivotpanel p { margin:.35rem 0; }
+.pivotpanel .swap { font-variant-numeric:tabular-nums; }
+.pivotpanel .verdict { font-weight:600; }
+.pivotpanel .verdict.title { color:var(--accent); }
 /* The dumbbell's connector carries the polarity its two dots already do,
    so the eye reads the GAP rather than hunting between the ends. */
 .chart .connector { stroke-width:3; opacity:.55; }

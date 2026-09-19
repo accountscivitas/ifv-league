@@ -154,4 +154,40 @@
     document.querySelectorAll('[data-team="' + CSS.escape(team) + '"]')
       .forEach(function (n) { n.classList.add("lit"); });
   });
+
+  // THE GHOST RINGS: click a cell, read what would have changed it.
+  //
+  // CLICK, not hover, and that is the owner's call: the answer is two or
+  // three sentences naming players and scores, which is more than a
+  // tooltip can hold and more than a reader wants flashing past under the
+  // cursor. Keyboard gets the same thing through Enter and Space, because
+  // a grid of 195 buttons that only a mouse can open is not navigable.
+  //
+  // Every panel is already in the page, hidden. Nothing is fetched, so
+  // this degrades to "grid plus all the panels" with JavaScript off.
+  function showPivot(key) {
+    document.querySelectorAll(".pivotpanel").forEach(function (p) {
+      p.hidden = p.getAttribute("data-panel") !== key;
+    });
+    document.querySelectorAll(".ghostcell.on").forEach(function (g) {
+      g.classList.remove("on");
+    });
+    var cell = document.querySelector(
+      '.ghostcell[data-cell="' + CSS.escape(key) + '"]');
+    if (cell) cell.classList.add("on");
+  }
+
+  document.addEventListener("click", function (e) {
+    var cell = e.target.closest && e.target.closest(".ghostcell");
+    if (!cell) return;
+    showPivot(cell.getAttribute("data-cell"));
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var cell = e.target.closest && e.target.closest(".ghostcell");
+    if (!cell) return;
+    e.preventDefault();
+    showPivot(cell.getAttribute("data-cell"));
+  });
 })();
