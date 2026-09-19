@@ -82,6 +82,14 @@ fieldset.chk label { display:inline-block; margin:.15rem .7rem .15rem 0;
 .seasonnav.bottom { margin:2.5rem 0 0; padding-top:1rem;
   border-top:1px solid var(--rule); }
 .dim { color:var(--dim); font-weight:400; }
+/* A team name on a stable tint, so the eye can follow one team down a list
+   of seventeen seasons. The NAME is inside every chip -- the tint is a
+   scanning aid, never the carrier of identity -- which is why twelve of
+   them is fine here and would not be in a chart. */
+.teamchip { display:inline-block; padding:.08rem .38rem; border-radius:3px;
+  background:var(--chip); color:var(--ink); }
+.teamchip.lit { outline:2px solid var(--accent); outline-offset:0;
+  font-weight:600; }
 .jump { margin:0 0 1.5rem; font-size:.9rem; line-height:2; }
 .totop { font-size:.62rem; font-weight:400; text-transform:uppercase;
   letter-spacing:.06em; margin-left:.5rem; vertical-align:middle; }
@@ -95,4 +103,189 @@ ul.bracket li { padding:.3rem 0 .3rem .75rem; border-left:2px solid var(--rule);
   :root { --ink:#e8e8e8; --dim:#9a9a9a; --rule:#333; --accent:#e8867f;
           --bg:#141414; --soft:#1b1b1b; }
   .note { background:#2a2618; border-left-color:#8a7320; }
+  /* The pale tint would glow on a dark page, so each chip carries a dark
+     twin computed from the same hue. */
+  .teamchip { background:var(--chipdark); }
+}
+
+/* ---- charts ---------------------------------------------------------- */
+/* Colours validated against this site's own surfaces; see charts/palette.py
+   for the run and for why no chart colours by franchise. */
+:root {
+  --c-pos:#2a78d6; --c-mid:#f0efec; --c-neg:#e34948;
+  --c-o1:#86b6ef; --c-o2:#5598e7; --c-o3:#2a78d6; --c-o4:#1c5cab;
+  --c-o5:#0d366b;
+  --c-s1:#2a78d6; --c-s2:#eb6834; --c-s3:#1baf7a;
+  --c-grid:#e1e0d9; --c-axis:#c3c2b7; --c-mark:#8a8a8a;
+}
+figure.chartwrap { margin:1rem 0 1.6rem; padding:0; }
+figure.chartwrap svg { width:100%; height:auto; display:block;
+  max-width:100%; overflow:visible; }
+figure.chartwrap figcaption { color:var(--dim); font-size:.85rem;
+  line-height:1.5; margin:.55rem 0 0; max-width:44rem; }
+.chart text { font:11px -apple-system,BlinkMacSystemFont,"Segoe UI",
+  Helvetica,Arial,sans-serif; fill:var(--dim); }
+.chart .lab { font-size:10px; fill:var(--dim); }
+.chart .lab-strong { font-size:11px; fill:var(--ink); font-weight:600; }
+.chart .axis-title { font-size:11px; fill:var(--dim); }
+/* Gridlines and axes are SOLID hairlines. Dashing reads as "threshold" or
+   "projection" when it is only a grid. */
+.chart .grid { stroke:var(--c-grid); stroke-width:1; }
+.chart .axis { stroke:var(--c-axis); stroke-width:1; }
+.chart .ref { stroke:var(--c-mark); stroke-width:1.5; opacity:.55; }
+.chart .mark { stroke:none; }
+.chart .dot { stroke:var(--bg); stroke-width:2; }
+.chart .series { fill:none; stroke-width:2; stroke-linejoin:round;
+  stroke-linecap:round; }
+/* The twelve-line race: every line is recessive ink and identity comes from
+   the end label, never from a hue. Hover raises one out of the pack. */
+.chart .race-line { stroke:var(--c-mark); stroke-width:1.5; opacity:.62; }
+.chart .race-hit { stroke:transparent; stroke-width:12; fill:none;
+  cursor:pointer; }
+.chart g.lane:hover .race-line, .chart g.lane.on .race-line {
+  stroke:var(--c-s1); stroke-width:2.5; opacity:1; }
+.chart g.lane:hover .end-label, .chart g.lane.on .end-label {
+  fill:var(--ink); font-weight:600; }
+.chart .end-label { font-size:10px; fill:var(--dim); }
+.chart .cell { stroke:var(--bg); stroke-width:2; }
+.chart .band-champion { fill:var(--accent); }
+.chart .band-runnerup { fill:var(--c-o4); }
+.chart .band-semi     { fill:var(--c-o3); }
+.chart .band-playoffs { fill:var(--c-o2); }
+.chart .band-missed   { fill:var(--c-o1); opacity:.42; }
+.chart .band-none     { fill:none; stroke:var(--c-grid); stroke-width:1; }
+.chartkey { display:flex; flex-wrap:wrap; gap:.15rem 1rem; margin:.5rem 0 0;
+  font-size:.78rem; color:var(--dim); list-style:none; padding:0; }
+.chartkey li { display:flex; align-items:center; gap:.35rem; }
+.chartkey i { width:.72rem; height:.72rem; border-radius:2px; display:block;
+  flex:0 0 auto; }
+.chartkey i.key-band-champion { background:var(--accent); }
+.chartkey i.key-band-runnerup { background:var(--c-o4); }
+.chartkey i.key-band-semi     { background:var(--c-o3); }
+.chartkey i.key-band-playoffs { background:var(--c-o2); }
+.chartkey i.key-band-missed   { background:var(--c-o1); opacity:.42; }
+.chartkey i.key-h2h-hi3 { background:var(--c-pos); }
+.chartkey i.key-h2h-mid { background:var(--c-mid); }
+.chartkey i.key-h2h-lo3 { background:var(--c-neg); }
+/* The head-to-head bins. SIX rather than a continuous ramp, because a
+   continuous fill cannot be a CSS class and an inline hex would not follow
+   the page into dark mode. Polarity, not magnitude: a winning record is the
+   positive pole. Every cell also prints its record, so colour is the second
+   channel and not the only one. */
+.chart .h2h-hi3 { fill:var(--c-pos); }
+.chart .h2h-hi2 { fill:var(--c-pos); opacity:.72; }
+.chart .h2h-hi1 { fill:var(--c-pos); opacity:.4; }
+.chart .h2h-mid { fill:var(--c-mid); }
+.chart .h2h-lo1 { fill:var(--c-neg); opacity:.4; }
+.chart .h2h-lo2 { fill:var(--c-neg); opacity:.72; }
+.chart .h2h-lo3 { fill:var(--c-neg); }
+.chart .h2h-none { fill:none; stroke:var(--c-grid); stroke-width:1; }
+.chart .h2h-self { fill:var(--soft); }
+/* The record printed in each cell. A FIXED ink colour is unreadable at one
+   end of the scale or the other -- 10px dark ink on saturated blue is about
+   3.3:1 -- so the saturated bins carry their own light text class and the
+   pale ones keep page ink. */
+.chart .cellnum { font-size:10px; fill:var(--ink);
+  font-variant-numeric:tabular-nums; pointer-events:none; }
+.chart .cellnum-on { fill:#fff; }
+/* Bump-chart points. Small and recessive at rest; the lane's hover state
+   raises the whole line including its dots. */
+/* A twelve-line RANK chart is the worst case for spaghetti: every line
+   visits every row sooner or later, so they cross constantly. The resting
+   state is therefore deliberately faint -- a texture you read structure
+   from -- and hover is what makes one line legible. Heavier strokes here
+   turn the chart into a hairball, which is what the first version was.
+   COMPOUND, not descendant: the class is on the <svg> ITSELF (class=
+   "chart bump"), so `.chart .bump` matched nothing at all and the
+   first attempt at this styling had no effect whatsoever. */
+.chart.bump .race-line { stroke-width:1.1; opacity:.26; }
+.chart.bump .place-dot { fill:var(--c-mark); stroke:none; opacity:.3;
+  r:2.2; }
+.chart.bump g.lane:hover .race-line,
+.chart.bump g.lane.on .race-line { stroke:var(--c-s1); stroke-width:2.6;
+  opacity:1; }
+.chart.bump g.lane:hover .place-dot,
+.chart.bump g.lane.on .place-dot { fill:var(--c-s1); opacity:1; r:3.4;
+  stroke:var(--bg); stroke-width:1.5; }
+.chart.bump .end-label { opacity:.75; }
+.chart.bump g.lane:hover .end-label,
+.chart.bump g.lane.on .end-label { opacity:1; }
+/* The franchise pages draw ONE team against the other eleven as ghosts.
+   The ghosts are context, not content. */
+.chart.bump g.lane.ghost .race-line { opacity:.13; }
+.chart.bump g.lane.ghost .place-dot { opacity:.13; }
+.chart.bump g.lane.me .race-line { stroke:var(--accent); stroke-width:2.8;
+  opacity:1; }
+.chart.bump g.lane.me .place-dot { fill:var(--accent); opacity:1; r:3.6;
+  stroke:var(--bg); stroke-width:1.5; }
+.chart.bump g.lane.me .end-label { fill:var(--accent); font-weight:700;
+  opacity:1; }
+.togglewrap { margin:0 0 1rem; }
+/* The page-level switch on the Overview: one control for every panel on the
+   page, so it reads as a setting rather than as one section's option. */
+.toggles.pagewide { margin:.2rem 0 .4rem; }
+.toggles.pagewide button { font-size:.88rem; padding:.34rem .8rem; }
+/* Scatter marks. Polarity again: which side of the drawn reference a mark
+   falls on. Partly transparent because the value scatter puts ~2,300 marks
+   on one plot and overlap IS information -- where the league concentrates
+   its money reads as density. */
+.chart .v-steal, .chart .l-lucky { fill:var(--c-pos); fill-opacity:.72; }
+.chart .v-bust, .chart .l-unlucky { fill:var(--c-neg); fill-opacity:.72; }
+.chart .v-par, .chart .l-par { fill:var(--c-mark); fill-opacity:.5; }
+.chartkey i.key-v-steal, .chartkey i.key-l-lucky { background:var(--c-pos); }
+.chartkey i.key-v-bust, .chartkey i.key-l-unlucky { background:var(--c-neg); }
+.chartkey i.key-ref { background:var(--c-mark); height:.2rem;
+  align-self:center; }
+/* Hover raises one mark out of a crowded cloud. The ring is drawn in the
+   surface colour rather than as a border, per the 2px-gap rule. */
+.chart .dot:hover { fill-opacity:1; stroke-width:2.5; }
+/* Bars are SINGLE-SERIES: one hue, and length carries the message. A ramp
+   keyed to each bar's own value would re-encode the length as colour and
+   spend the only free channel saying nothing new. */
+.chart .pay-now { fill:var(--c-o4); }
+.chart .pay-later { fill:var(--c-o2); }
+.chart .bench-bar { fill:var(--c-o3); }
+.chartkey i.key-pay-now { background:var(--c-o4); }
+.chartkey i.key-pay-later { background:var(--c-o2); }
+.chartkey i.key-ribbon-s1 { background:var(--c-o1); }
+.chartkey i.key-ribbon-s5 { background:var(--c-o5); }
+.chartkey i.key-ribbon-cut { background:var(--c-neg); }
+/* The contract ribbon: an ORDINAL salary ramp, because the thing it encodes
+   really is ordered. A cut breaks out of the ramp entirely -- what sits in
+   that block is dead money, a different quantity from a salary, and giving
+   it a step of the same scale would invite reading it as one. */
+.chart .ribbon-s1 { fill:var(--c-o1); }
+.chart .ribbon-s2 { fill:var(--c-o2); }
+.chart .ribbon-s3 { fill:var(--c-o3); }
+.chart .ribbon-s4 { fill:var(--c-o4); }
+.chart .ribbon-s5 { fill:var(--c-o5); }
+.chart .ribbon-cut { fill:var(--c-neg); }
+.chart .ribbon-term { font-size:9px; fill:var(--ink);
+  pointer-events:none; letter-spacing:.02em; }
+/* The tooltip is an ENHANCEMENT: every value it shows is also in the table
+   beside the chart, so a reader without JS loses nothing but convenience. */
+.charttip { position:fixed; z-index:20; pointer-events:none; max-width:17rem;
+  background:var(--bg); color:var(--ink); border:1px solid var(--rule);
+  border-radius:4px; padding:.4rem .55rem; font-size:.8rem; line-height:1.4;
+  box-shadow:0 2px 10px rgba(0,0,0,.14); }
+.charttip b { font-weight:600; }
+.charttip .t-sub { color:var(--dim); }
+.chartfilters { display:flex; flex-wrap:wrap; gap:.4rem; margin:.6rem 0 .2rem;
+  align-items:center; }
+.chartfilters select, .chartfilters button { font:inherit; font-size:.85rem;
+  padding:.25rem .5rem; border:1px solid var(--rule); border-radius:4px;
+  background:var(--bg); color:var(--ink); cursor:pointer; }
+.chartfilters label { font-size:.78rem; color:var(--dim); }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c-pos:#3987e5; --c-mid:#383835; --c-neg:#e66767;
+    --c-o1:#184f95; --c-o2:#256abf; --c-o3:#3987e5; --c-o4:#6da7ec;
+    --c-o5:#9ec5f4;
+    --c-s1:#3987e5; --c-s2:#d95926; --c-s3:#199e70;
+    --c-grid:#2c2c2a; --c-axis:#383835; --c-mark:#7d7d7d;
+  }
+  .chart .band-missed { opacity:.55; }
+}
+@media print {
+  figure.chartwrap { break-inside:avoid; }
 }
