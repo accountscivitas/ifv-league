@@ -312,6 +312,37 @@ figure.chartwrap figcaption { color:var(--dim); font-size:.85rem;
 .chartkey i.key-v-bust, .chartkey i.key-l-unlucky { background:var(--c-neg); }
 .chartkey i.key-ref { background:var(--c-mark); height:.2rem;
   align-self:center; }
+/* THE GHOST RINGS. Four SEMANTIC states, not categorical identity slots:
+   a title won, a title one decision away by the owner's own lineup, one
+   away by somebody else's pick, and a season that was neither. Twelve
+   franchises could never be coloured by franchise -- this package defines
+   three categorical slots and caps matrix forms at three regardless -- so
+   the grid names every person in text and spends colour on state.
+
+   THE HOLLOWNESS IS THE WHOLE METAPHOR, so a ghost is stroke-only with
+   NO fill and must stay that way in dark mode; it is defined with the
+   palette's tokens rather than an inline hex for exactly that reason.
+
+   NOT DASHED, deliberately. A dashed ring was the first draft and it
+   tripped test_gridlines_are_solid_rather_than_dashed, whose reason --
+   dashing reads as "threshold" or "projection" -- applies here too. The
+   empty middle already says "this did not happen"; the dash only made a
+   9px ring noisy. The guard stays as it is. */
+.chart .ring-won { fill:var(--c-mark); stroke:none; }
+.chart .ring-ghost { fill:none; stroke-width:2.5; }
+.chart .k-lineup { stroke:var(--c-neg); }
+.chart .k-choice { stroke:var(--c-mid); }
+.chart .cell-none { fill:var(--c-grid); stroke:none; }
+.chart .ring-won:hover, .chart .ring-ghost:hover { stroke-width:3.5; }
+/* The dumbbell's connector carries the polarity its two dots already do,
+   so the eye reads the GAP rather than hunting between the ends. */
+.chart .connector { stroke-width:3; opacity:.55; }
+.chart .connector.l-lucky { stroke:var(--c-pos); }
+.chart .connector.l-unlucky { stroke:var(--c-neg); }
+/* Critical Moments: the swing is an ABSOLUTE value so a collapse ranks
+   beside a surge, which means the direction has to be said somewhere. */
+td.rose { color:var(--c-pos); }
+td.fell { color:var(--c-neg); }
 /* Hover raises one mark out of a crowded cloud. The ring is drawn in the
    surface colour rather than as a border, per the 2px-gap rule. */
 .chart .dot:hover { fill-opacity:1; stroke-width:2.5; }
