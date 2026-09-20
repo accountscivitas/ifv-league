@@ -171,6 +171,17 @@ table.timeline td a { color:inherit; display:block; }
 .teamref.lit { color:var(--accent); font-weight:600; }
 tbody tr:has(.teamref.lit) td { background:#fdf4f2; }
 .jump { margin:0 0 1.5rem; font-size:.9rem; line-height:2; }
+/* ⛔ A SUBHEADING, NOT A HEADING. Owner, 2026-09-20, on "No longer on
+   this roster": "That text is way too big. It's the same size as the
+   team names. It should be much smaller. And a different color."
+   He is right that it competed with the franchise name directly above
+   it -- both were headings of the same weight, so the page read as
+   though a departure list were as important as the roster. */
+h3.gone { font-size:.8rem; font-weight:600; color:var(--dim);
+  text-transform:uppercase; letter-spacing:.07em;
+  margin:1.6rem 0 .3rem; }
+h3.gone .tally { font-weight:700; color:var(--accent);
+  letter-spacing:0; margin-left:.35rem; }
 .totop { font-size:.62rem; font-weight:400; text-transform:uppercase;
   letter-spacing:.06em; margin-left:.5rem; vertical-align:middle; }
 h2[id] { scroll-margin-top:1rem; }
@@ -210,8 +221,15 @@ ul.bracket li { padding:.3rem 0 .3rem .75rem; border-left:2px solid var(--rule);
 figure.chartwrap { margin:1rem 0 1.6rem; padding:0; }
 figure.chartwrap svg { width:100%; height:auto; display:block;
   max-width:100%; overflow:visible; }
+/* ⛔ THE GAP IS DELIBERATE AND WAS TOO SMALL. Owner, 2026-09-20, on the
+   Elo caption: "for text like this, there needs to be more space b/w the
+   text and the chart". At .55rem a five-line paragraph sat hard against
+   the axis labels and read as part of the chart rather than as a note
+   under it. The longest captions on the site run to six lines, so the
+   separation has to survive that, not just a one-liner. */
 figure.chartwrap figcaption { color:var(--dim); font-size:.85rem;
-  line-height:1.5; margin:.55rem 0 0; max-width:44rem; }
+  line-height:1.55; margin:1.4rem 0 0; max-width:44rem;
+  padding-top:.9rem; border-top:1px solid var(--c-grid); }
 .chart text { font:11px -apple-system,BlinkMacSystemFont,"Segoe UI",
   Helvetica,Arial,sans-serif; fill:var(--dim); }
 .chart .lab { font-size:10px; fill:var(--dim); }
@@ -231,6 +249,13 @@ figure.chartwrap figcaption { color:var(--dim); font-size:.85rem;
 .chart .race-line { stroke:var(--c-mark); stroke-width:1.5; opacity:.62; }
 .chart .race-hit { stroke:transparent; stroke-width:12; fill:none;
   cursor:pointer; }
+/* One invisible disc per vertex, so a tooltip can answer for THE WEEK the
+   cursor is on rather than for the end of the line. Invisible rather than
+   drawn: twelve lanes x fourteen weeks is 168 dots, and drawing them turns
+   a set of lines into a stipple. The lane's own hover still raises the
+   whole line -- these only carry the number. */
+.chart .lane-mark { fill:transparent; stroke:none; cursor:pointer; }
+.chart g.lane:hover .lane-mark { fill:var(--c-s1); fill-opacity:.9; }
 .chart g.lane:hover .race-line, .chart g.lane.on .race-line {
   stroke:var(--c-s1); stroke-width:2.5; opacity:1; }
 .chart g.lane:hover .end-label, .chart g.lane.on .end-label {
@@ -441,6 +466,22 @@ td.fell { color:var(--c-neg); }
 .chart .ribbon-s4 { fill:var(--c-o4); }
 .chart .ribbon-s5 { fill:var(--c-o5); }
 .chart .ribbon-cut { fill:var(--c-neg); }
+/* ---- the league-wide ribbon ----
+   Two label columns, franchise left and player right, because on this
+   chart the franchise is half the question -- on a franchise page it is
+   the page. The team column is dimmer and smaller: it repeats down the
+   list, and at equal weight twelve names shouted over 483 rows. */
+.chart .rb-team { font-size:9px; fill:var(--dim); opacity:.75; }
+/* A LINK INSIDE AN SVG still gets the browser's underline and link blue
+   unless it is told not to. Every label on this chart is a link, so
+   without this the whole gutter turns blue and underlined. */
+.chart a { text-decoration:none; }
+.chart a:hover text { fill:var(--accent); }
+/* THE WHOLE ROW LIGHTS UP, not just the cell under the cursor. 483 rows
+   is far past the point where the eye can hold a horizontal line, which
+   is the same problem the lane charts solve with a hit line. */
+.chart g.rb:hover .lab { fill:var(--ink); }
+.chart g.rb { transition:none; }
 .chart .ribbon-term { font-size:9px; fill:var(--ink);
   pointer-events:none; letter-spacing:.02em; }
 /* The tooltip is an ENHANCEMENT: every value it shows is also in the table

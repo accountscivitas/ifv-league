@@ -64,6 +64,13 @@
       return [b(d.t), esc(d.v) + "% " + esc(d.m),
               dim("after week " + esc(d.w))];
     },
+    // The running total at THAT week, which is what the line plots. The
+    // week's own score is a different number by a factor of fourteen and
+    // would answer a question the chart is not drawing.
+    race: function (d) {
+      return [b(d.t), esc(d.v) + " " + esc(d.m),
+              dim("after week " + esc(d.w))];
+    },
     // The owner's complaint about the odds chart applies verbatim to any
     // twelve-lane chart: "you can't hover over any of the teams to see
     // what the actual percentages were". A line with no readable value is
