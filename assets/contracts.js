@@ -20,6 +20,10 @@
         // which a bare indexOf("C5") would -- the same substring trap
         // that made a chart test pass against a renamed CSS rule.
         terms: g.getAttribute("data-y") || "",
+        // Each term PAIRED WITH ITS SEASON, so a term filter and a year
+        // window can compose into one question instead of two that
+        // happen to both be true. See `data-ys` in ribbon.py.
+        pairs: g.getAttribute("data-ys") || "",
         first: +(g.getAttribute("data-first") || 0),
         last: +(g.getAttribute("data-last") || 0),
         len: +(g.getAttribute("data-len") || 0),
@@ -30,43 +34,96 @@
     return true;
   }
 
-  function wantsTerm(d, term) {
-    if (!term) return true;
-    // "Final years only" and "Cut" are not contract years; they are
-    // properties of the contract, and the select carries all three
-    // because to a reader they are one question: which kind of row.
-    if (term === "CUT") return d.cut;
-    if (term === "F") return d.terms.indexOf("F|") >= 0;
-    // A C2 contract that ran to its end is written "C2F", so asking for
-    // C2 must match both. Anchored on the left so C1 never matches C2.
-    return d.terms.indexOf("|" + term) >= 0;
+  // A term matches when it IS the asked-for one. "C2" must match "C2F",
+  // because a C2 that ran to its end is written that way -- but "C1"
+  // must never match "C10", so the test is anchored at both ends rather
+  // than being a prefix.
+  //
+  // ⛔ A PREFIX TEST IS CURRENTLY EQUIVALENT, AND ONLY BY THE RULEBOOK.
+  // Mutating this to `term.indexOf(want) === 0` came back INERT, and it
+  // is a PROVABLE non-mutation rather than a gap: MEASURED over the whole
+  // 14-term vocabulary ('', A, B, C1..C5, C1F..C5F, CUT), exact and
+  // prefix agree on every pair, because a C contract is capped at five
+  // years so no term is a prefix of another except its own F form.
+  // The exact form is kept because it survives the cap changing; do not
+  // "simplify" it back on the grounds that the mutation is inert.
+  function isTerm(term, want) {
+    if (want === "F") return term.charAt(term.length - 1) === "F";
+    if (want === "CUT") return term === "CUT";
+    return term === want || term === want + "F";
+  }
+
+  // The terms this contract holds INSIDE [from, to]. With no window that
+  // is every term it ever held.
+  function termsInWindow(d, from, to) {
+    var out = [];
+    d.pairs.split("|").forEach(function (pair) {
+      if (!pair) return;
+      var cut = pair.indexOf(":");
+      var season = +pair.slice(0, cut);
+      if (from && season < from) return;
+      if (to && season > to) return;
+      out.push(pair.slice(cut + 1));
+    });
+    return out;
   }
 
   function matches(d, q, team, term, from, to, minlen) {
     if (q && d.name.indexOf(q) < 0) return false;
     if (team && d.team !== team) return false;
-    if (!wantsTerm(d, term)) return false;
-    // OVERLAP, not containment. "Live between 2020 and 2024" means the
-    // contract was running at some point in that window -- a 2018-2022
-    // deal was. Requiring containment would hide every long contract,
-    // which is the thing the page exists to show.
-    if (from && d.last < from) return false;
-    if (to && d.first > to) return false;
     if (minlen > 1 && d.len < minlen) return false;
-    return true;
+
+    // ⛔ ONE RULE COVERS BOTH FILTERS, and that is why they compose.
+    // The window selects which SEASONS count; the term then asks what
+    // happened in them.
+    //
+    // With no term this reduces exactly to the OVERLAP test it replaced
+    // -- "live between 2020 and 2024" is "holds at least one season in
+    // the window" -- so a long 2018-2022 deal still shows, which is the
+    // thing the page exists to show.
+    //
+    // With a term it answers the question the owner actually asked:
+    // "for 2026, give me all the contracts that are in the final year
+    // only and therefore are coming up free next year." Previously the
+    // two conditions were checked separately, so a contract whose final
+    // year was 2022 and which merely overlapped 2026 came back too.
+    var here = termsInWindow(d, from, to);
+    if (!here.length) return false;
+    if (!term) return true;
+    return here.some(function (t) { return isTerm(t, term); });
   }
 
+  function byText(x, y) { return x < y ? -1 : (x > y ? 1 : 0); }
+
   var SORTS = {
-    first: function (a, b) { return a.__d.first - b.__d.first; },
-    recent: function (a, b) { return b.__d.last - a.__d.last; },
+    // THE DEFAULT, and the owner named its three keys: "sort it by year
+    // first, and then by team, and then by contract length. Right now it
+    // just seems to be sorted randomly."
+    //
+    // It was not random -- it was the start season alone, with the
+    // franchise as a tie-break. But the start season is not DRAWN as a
+    // number anywhere, so a reader sees only the left edge of each bar,
+    // and 39 rows whose bars begin in a dozen different places read as
+    // no order at all. Grouping by franchise within the year is what
+    // makes the ordering visible on the page rather than merely present.
+    year: function (a, b) {
+      return (a.__d.first - b.__d.first)
+        || byText(a.__d.team, b.__d.team)
+        || (b.__d.len - a.__d.len);
+    },
+    recent: function (a, b) {
+      return (b.__d.last - a.__d.last)
+        || byText(a.__d.team, b.__d.team)
+        || (b.__d.len - a.__d.len);
+    },
     len: function (a, b) { return b.__d.len - a.__d.len; },
     peak: function (a, b) { return b.__d.peak - a.__d.peak; },
     team: function (a, b) {
-      return a.__d.team < b.__d.team ? -1 : (a.__d.team > b.__d.team ? 1 : 0);
+      return byText(a.__d.team, b.__d.team)
+        || (a.__d.first - b.__d.first)
+        || (b.__d.len - a.__d.len);
     },
-    name: function (a, b) {
-      return a.__d.name < b.__d.name ? -1 : (a.__d.name > b.__d.name ? 1 : 0);
-    }
+    name: function (a, b) { return byText(a.__d.name, b.__d.name); }
   };
 
   function apply() {
@@ -76,7 +133,7 @@
     var from = +el("rbfrom").value || 0;
     var to = +el("rbto").value || 0;
     var minlen = +el("rblen").value || 1;
-    var how = el("rbsort").value || "first";
+    var how = el("rbsort").value || "year";
 
     var shown = rows.filter(function (g) {
       var ok = matches(g.__d, q, team, term, from, to, minlen);
@@ -87,7 +144,7 @@
     // sort key swap places between renders and the chart appears to
     // shuffle itself when an unrelated filter changes.
     shown.sort(function (a, b) {
-      return (SORTS[how] || SORTS.first)(a, b)
+      return (SORTS[how] || SORTS.year)(a, b)
         || (a.__d.first - b.__d.first)
         || (a.__d.name < b.__d.name ? -1 : 1);
     });
@@ -129,7 +186,7 @@
     el("rbfrom").value = "";
     el("rbto").value = "";
     el("rblen").value = "1";
-    el("rbsort").value = "first";
+    el("rbsort").value = "year";
     apply();
   }
 
