@@ -274,13 +274,17 @@
     document.querySelectorAll(".ghostcell").forEach(function (cell) {
       var kind = cell.getAttribute("data-ghost");
       var moves = cell.getAttribute("data-moves");
-      // "close" filters on HOW MANY start/sits, not on whose decision it
-      // was -- the owner's question: "Distinguish between 'one move would
-      // win the championship' and 'one change or two changes would win
-      // the championship'."
+      // "close" filters on HOW MANY OF HIS OWN decisions, not on whose
+      // decision it was -- the owner's question: "Distinguish between
+      // 'one move would win the championship' and 'one change or two
+      // changes would win the championship'."
+      //
+      // EXACTLY one, not "<= 1". Under <= 1 every draw-ring qualified at
+      // zero, so the filter named for a single start/sit returned the 17
+      // seasons that needed NO start/sit at all.
       var show = want === "close"
-        ? (kind === "won" || (moves !== "" && Number(moves) <= 1))
-        : (want === "both" || kind === "won" || kind === want);
+        ? (kind === "won" || moves === "1")
+        : (want === "all" || kind === "won" || kind === want);
       cell.classList.toggle("dim", !show);
     });
   });
