@@ -74,6 +74,11 @@
               dim("peak " + esc(d.p) + " in " + esc(d.ps)
                   + " \u00b7 low " + esc(d.l) + " in " + esc(d.ls))];
     },
+    pts: function (d) {
+      return [b(d.t), "Scoring " + esc(d.v) + " (100 = league average)",
+              dim("peak " + esc(d.p) + " in " + esc(d.ps)
+                  + " \u00b7 low " + esc(d.l) + " in " + esc(d.ls))];
+    },
     // A 2.6px mark cannot carry a label, so the tooltip is the only way
     // to find out WHICH game a mark in a 199-game strip is. Without it
     // the strip is a texture rather than a record.
@@ -249,6 +254,27 @@
   // Lineup changes / matchup choices / both. A title always shows: it is
   // the thing the ghosts are measured against, and hiding it would leave
   // a reader counting hollow rings with nothing to compare them to.
+  // The draft tables hold the top ten OVERALL plus the top ten within
+  // each position, every row tagged. One click re-ranks all three tables
+  // at once, and there is no second query that could disagree with the
+  // first. Owner: "the best-value quarterbacks, the most expensive
+  // quarterbacks, etc."
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest && e.target.closest("[data-pos-show]");
+    if (!btn) return;
+    var want = btn.getAttribute("data-pos-show");
+    Array.prototype.forEach.call(
+      btn.parentNode.querySelectorAll("[data-pos-show]"), function (b) {
+        b.classList.toggle("on", b === btn);
+      });
+    document.querySelectorAll("tr[data-pos]").forEach(function (row) {
+      var show = want === "all"
+        ? row.getAttribute("data-all") === "1"
+        : row.getAttribute("data-pos") === want;
+      row.hidden = !show;
+    });
+  });
+
   document.addEventListener("click", function (e) {
     var btn = e.target.closest && e.target.closest("[data-ghost-show]");
     if (!btn) return;
