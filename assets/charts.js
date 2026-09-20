@@ -85,6 +85,20 @@
       return [b(d.t), "Median " + esc(d.m),
               "Middle half " + esc(d.q),
               dim("range " + esc(d.r) + " over " + esc(d.n) + " games")];
+    },
+    rivalry: function (d) {
+      return [b(d.t), esc(d.w),
+              esc(d.n) + " meetings, leader by " + esc(d.v) + " points",
+              dim(esc(d.s) + " lead change"
+                  + (d.s === "1" ? "" : "s"))];
+    },
+    trade: function (d) {
+      return [b(d.t), esc(d.v) + " trade" + (d.v === "1" ? "" : "s")];
+    },
+    trader: function (d) {
+      return [b(d.t), esc(d.v) + " trades",
+              dim("with " + esc(d.p) + " different franchise"
+                  + (d.p === "1" ? "" : "s"))];
     }
   };
 

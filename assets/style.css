@@ -477,6 +477,16 @@ td.fell { color:var(--c-neg); }
 .chart .spread-box { fill:var(--c-mark); fill-opacity:.3;
   stroke:var(--c-mark); stroke-width:1; }
 .chart .spread-median { stroke:var(--accent); stroke-width:2.5; }
+/* The trade network. Arcs are recessive ink -- identity comes from the
+   two rows a curve joins, never from a hue -- and `stroke-width` carries
+   the count, which is the one channel a line has spare. Hovering lifts
+   one out of the tangle, the same affordance the twelve-lane charts use;
+   `stroke-width` is deliberately NOT changed on hover, because a thicker
+   line would read as more trades. */
+.chart .trade-arc { stroke:var(--c-mark); opacity:.45;
+  stroke-linecap:round; }
+.chart .trade-arc:hover { opacity:1; stroke:var(--accent); }
+.chart .trade-node { fill:var(--ink); stroke:var(--bg); stroke-width:1.5; }
 @media (prefers-color-scheme: dark) {
   :root {
     --c-pos:#3987e5; --c-mid:#383835; --c-neg:#e66767;
