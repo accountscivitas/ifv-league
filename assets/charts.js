@@ -246,7 +246,14 @@
       });
     document.querySelectorAll(".ghostcell").forEach(function (cell) {
       var kind = cell.getAttribute("data-ghost");
-      var show = want === "both" || kind === "won" || kind === want;
+      var moves = cell.getAttribute("data-moves");
+      // "close" filters on HOW MANY start/sits, not on whose decision it
+      // was -- the owner's question: "Distinguish between 'one move would
+      // win the championship' and 'one change or two changes would win
+      // the championship'."
+      var show = want === "close"
+        ? (kind === "won" || (moves !== "" && Number(moves) <= 1))
+        : (want === "both" || kind === "won" || kind === want);
       cell.classList.toggle("dim", !show);
     });
   });

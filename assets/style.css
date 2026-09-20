@@ -354,6 +354,12 @@ figure.chartwrap figcaption { color:var(--dim); font-size:.85rem;
 .chart .k-lineup { stroke:var(--c-neg); }
 .chart .k-choice { stroke:var(--c-pos); }
 .chart .cell-none { fill:var(--c-grid); stroke:none; }
+/* HOW MANY start/sits that ring would have taken, inside the ring. The
+   ring already says WHOSE decision it was; this says how close it was,
+   which is the thing two rings on one row most differ by. `pointer-
+   events:none` so the digit never eats the click meant for the cell. */
+.chart .ring-moves { font-size:10px; font-weight:700; fill:var(--ink);
+  pointer-events:none; }
 /* A transparent disc over every cell, so the click target is the whole
    square rather than a 3px stroke. Same trick as .race-hit. */
 .chart .cell-hit { fill:transparent; stroke:none; cursor:pointer; }
