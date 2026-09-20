@@ -186,7 +186,52 @@
     });
   }
 
+  // ONE FILTER, TWO SECTIONS. The value scatter above the table is drawn
+  // server-side as SVG; every dot carries the same fields the table rows
+  // are filtered on, so the page's single control set can drive both.
+  //
+  // Three controls are deliberately NOT applied here, and the page says so:
+  // `cut` and `churn` only ever ADD table rows (no dot is a cut row or an
+  // FA pickup), and `ming` has no counterpart on a dot -- it carries what
+  // a pick scored, not how many weeks it took.
+  function syncChart() {
+    var dots = document.querySelectorAll("circle[data-kind='value']");
+    if (!dots.length) return;
+    var q = el("q").value.trim().toLowerCase();
+    var team = el("team").value, kind = el("kind").value;
+    var acq = el("acq").value;
+    var seasons = checked(el("seasonbox")), poss = checked(el("posbox"));
+    var minp = parseInt(el("minp").value, 10) || 0;
+    var shown = 0;
+    Array.prototype.forEach.call(dots, function (dot) {
+      var d = dot.dataset;
+      var ok = true;
+      if (q && d.n.toLowerCase().indexOf(q) === -1) ok = false;
+      if (team && d.tid !== team) ok = false;
+      if (seasons && !seasons[Number(d.s)]) ok = false;
+      if (poss && !poss[d.pos]) ok = false;
+      if (Number(d.p) < minp) ok = false;
+      // Every dot IS a draft pick, so "contract years only" empties the
+      // chart -- correctly. Saying nothing would leave a filtered table
+      // beside an unfiltered chart.
+      if (kind === "contract") ok = false;
+      if (kind === "auction" && d.acq !== "auction_purchase") ok = false;
+      if (kind === "keeper" && d.acq !== "keeper") ok = false;
+      if (acq && acq !== "Draft") ok = false;
+      dot.style.display = ok ? "" : "none";
+      if (ok) shown++;
+    });
+    var note = el("chartsummary");
+    if (note) {
+      note.textContent = shown === dots.length
+        ? shown.toLocaleString() + " priced picks"
+        : shown.toLocaleString() + " of " + dots.length.toLocaleString()
+          + " priced picks match";
+    }
+  }
+
   function render() {
+    syncChart();
     var rows = matches();
     // Rows with nothing in the sorted column go LAST in either direction.
     // Sorting by PPG used to put every cut and unscored row at the top,

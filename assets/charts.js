@@ -160,31 +160,11 @@
     if (e.key === "Escape") hide();
   });
 
-  // The value scatter's position filter. Nothing ticked means EVERY
-  // position -- see _position_filter in scatter.py for why that is not the
-  // same as ticking them all.
-  //
-  // It HIDES marks rather than redrawing the chart, so the axes and the
-  // market curve stay put: the reader is narrowing what is plotted, not
-  // getting a new chart each click, and a mark keeps its position between
-  // selections so the eye can follow it.
-  Array.prototype.forEach.call(
-    document.querySelectorAll("[data-posfilter]"), function (box) {
-      var fig = box.nextElementSibling;
-      if (!fig) return;
-      box.addEventListener("change", function () {
-        var on = {}, any = false;
-        Array.prototype.forEach.call(
-          box.querySelectorAll("input:checked"), function (i) {
-            on[i.value] = true; any = true;
-          });
-        Array.prototype.forEach.call(
-          fig.querySelectorAll("[data-pos]"), function (dot) {
-            var show = !any || on[dot.getAttribute("data-pos")];
-            dot.style.display = show ? "" : "none";
-          });
-      });
-    });
+  // THE VALUE SCATTER'S OWN POSITION FILTER LIVED HERE and is deleted
+  // with the fieldset it drove. The Players page has ONE filter now
+  // (owner, 2026-09-20) and `explore.js::syncChart` hides the dots --
+  // still by hiding rather than redrawing, so the axes and the market
+  // curve stay put and a mark keeps its position between selections.
 
   // Hovering a lane in a many-line chart raises it out of the pack. CSS
   // does this for :hover; this adds it for the season-list chips, where the
