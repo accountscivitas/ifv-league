@@ -133,7 +133,33 @@ table.timeline td.tl-none { background:none; }
    fills the box so the whole square is the hit target rather than two
    glyphs in the middle of it. */
 table.timeline td a { color:inherit; display:block; }
+/* ---- the committed-salary hover card ----
+   CSS-only and focusable, not a script: the site is static and this is
+   pure presentation, so a keyboard reader gets the same card a mouse
+   does without shipping JS for it. */
+.hovercard { position:relative; cursor:help; border-bottom:1px dotted var(--rule); }
+.hovercard > .card { display:none; position:absolute; left:0; top:1.5em;
+  z-index:20; min-width:16rem; max-width:22rem; padding:.6rem .7rem;
+  background:var(--bg); border:1px solid var(--rule); border-radius:6px;
+  box-shadow:0 6px 20px rgba(0,0,0,.18); font-size:.85rem;
+  text-align:left; white-space:normal; }
+.hovercard:hover > .card, .hovercard:focus > .card,
+.hovercard:focus-within > .card { display:block; }
+.hovercard .card ul { list-style:none; margin:0; padding:0; }
+.hovercard .card li { display:flex; gap:.5rem; align-items:baseline;
+  padding:.12rem 0; }
+.hovercard .card li > span:first-child { flex:1 1 auto; }
+.hovercard .card .ct { color:var(--dim); font-size:.9em; }
+.hovercard .card .cm { font-weight:700; font-variant-numeric:tabular-nums; }
+.cardfoot { margin:.45rem 0 0; padding-top:.35rem;
+  border-top:1px solid var(--c-grid, var(--rule)); color:var(--dim);
+  font-size:.9em; }
+.measurelist { list-style:none; margin:.4rem 0 1rem; padding:0; }
+.measurelist li { padding:.15rem 0; }
 .tl-titles { font-weight:700; color:var(--accent); }
+/* Runner-ups sit beside titles but must not compete with them: same
+   weight would make a column of 2nds read as loud as a column of wins. */
+.tl-seconds { font-weight:600; color:var(--dim); }
 .timelinekey .tl-key { display:inline-block; min-width:1.9rem;
   text-align:center; padding:.06rem .3rem; border-radius:3px;
   font-size:.72rem; font-weight:600; margin-right:.3rem; }
