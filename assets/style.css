@@ -137,6 +137,40 @@ table.timeline td.tl-none { background:none; }
    fills the box so the whole square is the hit target rather than two
    glyphs in the middle of it. */
 table.timeline td a { color:inherit; display:block; }
+/* ---- the settings grid, "how the league has changed" ----
+   Same shape as the timeline above and the same discipline: the VALUE is in
+   every cell, and ink-against-dim is a second channel saying which season it
+   MOVED in. A reader who sees no ink is being told the truth -- as of the
+   2026 season, eight of the ten settings have ever moved and none since
+   2021. (Dated because it is a population, not an invariant: R147.)
+   NO ACCENT ANYWHERE IN HERE. The site's red is reserved for links (see the
+   timeline's colour note), and an underlined or red-tinted cell in a grid
+   full of words would read as one.
+   ⛔ THE CHANNEL IS THE FONT WEIGHT, NOT THE WASH. `--c-mid` is nearly
+   white on purpose and `charts/palette.py` warns against using it for
+   anything that has to be SEEN -- correctly, for a mark whose only channel
+   is colour. Here 700-against-400 carries the signal and the wash merely
+   widens the target, so the figure still reads if the wash disappears. Do
+   not promote the wash to a pole; do not demote the weight. */
+table.settings { font-variant-numeric:tabular-nums; }
+table.settings thead th { text-align:center; }
+table.settings thead th:first-child { text-align:left; }
+table.settings th[scope="row"] { text-align:right; font-weight:600;
+  font-size:.82rem; text-transform:none; letter-spacing:0; color:var(--ink);
+  white-space:nowrap; position:sticky; left:0; background:var(--bg); }
+table.settings td { text-align:center; font-size:.76rem;
+  padding:.3rem .22rem; min-width:2.1rem; }
+table.settings tr:nth-child(even) th[scope="row"] { background:var(--soft); }
+/* ⛔ BOTH CELL RULES ARE PREFIXED `table.settings td`, for the reason the
+   timeline records one screen up: the zebra `tr:nth-child(even) td` scores
+   (0,1,2) and a bare `.sg-same` scores (0,1,0), so the stripe would win and
+   half the grid would sit on a wash that means nothing. Prefixing lifts
+   both to (0,2,2), and the unchanged cell explicitly clears the stripe so
+   the only background left on this table is the one that means "changed". */
+table.settings td.sg-same { background:none; color:var(--dim);
+  font-weight:400; }
+table.settings td.sg-change { background:var(--c-mid, var(--soft));
+  color:var(--ink); font-weight:700; }
 /* ---- the committed-salary hover card ----
    CSS-only and focusable, not a script: the site is static and this is
    pure presentation, so a keyboard reader gets the same card a mouse
@@ -270,6 +304,14 @@ figure.chartwrap figcaption { color:var(--dim); font-size:.85rem;
 .chart .grid { stroke:var(--c-grid); stroke-width:1; }
 .chart .axis { stroke:var(--c-axis); stroke-width:1; }
 .chart .ref { stroke:var(--c-mark); stroke-width:1.5; opacity:.55; }
+/* THE FIELD BEHIND A SMALL MULTIPLE: the min-max range of the other eleven
+   franchises at each x. It is CONTEXT, so it has to read as paper rather
+   than as a mark -- a band dark enough to compete with the accent line
+   turns twelve panels back into the spaghetti they replaced. Neutral ink
+   at low opacity, never a hue: the one colour on these panels is the
+   franchise's own line, and a coloured band would spend the only channel
+   that carries meaning. The median through it uses `.ref` above. */
+.chart .envelope { fill:var(--c-mark); fill-opacity:.13; stroke:none; }
 .chart .mark { stroke:none; }
 .chart .dot { stroke:var(--bg); stroke-width:2; }
 .chart .series { fill:none; stroke-width:2; stroke-linejoin:round;
@@ -338,6 +380,41 @@ figure.chartwrap figcaption { color:var(--dim); font-size:.85rem;
 .chart .cellnum { font-size:10px; fill:var(--ink);
   font-variant-numeric:tabular-nums; pointer-events:none; }
 .chart .cellnum-on { fill:#fff; }
+/* ---- the dead-money matrix ----
+   A SEQUENTIAL ramp, on the same five validated ordinal values the finish
+   grid uses, because what it encodes is a quantity of dollars. Five bins
+   with dollar edges rather than quantiles, so a square does not change
+   shade when an unrelated franchise is cut somewhere else; the legend
+   prints the edges. It is deliberately NOT the ribbon's salary ramp: dead
+   money is a different quantity from a salary, which is the same reason
+   the ribbon gives a cut block its own colour outside that ramp.
+   A charge of $0 draws as an EMPTY square and prints its 0 -- it is a
+   recorded cut, but it is not an amount of money, and the first step of a
+   money ramp would say it was. */
+.chart .dm-1 { fill:var(--c-o1); }
+.chart .dm-2 { fill:var(--c-o2); }
+.chart .dm-3 { fill:var(--c-o3); }
+.chart .dm-4 { fill:var(--c-o4); }
+.chart .dm-5 { fill:var(--c-o5); }
+.chart .dm-none { fill:none; stroke:var(--c-grid); stroke-width:1; }
+.chartkey i.key-dm-1 { background:var(--c-o1); }
+.chartkey i.key-dm-2 { background:var(--c-o2); }
+.chartkey i.key-dm-3 { background:var(--c-o3); }
+.chartkey i.key-dm-4 { background:var(--c-o4); }
+.chartkey i.key-dm-5 { background:var(--c-o5); }
+/* ⛔ `cellnum-on` CANNOT BE REUSED HERE AND THE REASON IS THE RAMP, NOT
+   THE CHART. The h2h bins are --c-pos / --c-neg, which stay mid-toned in
+   both modes, so one fixed white ink works. The ORDINAL ramp INVERTS:
+   --c-o5 is #0d366b on white and #9ec5f4 on black, so the deep bins are
+   dark in light mode and LIGHT in dark mode. A fixed #fff would be
+   correct in one mode and invisible in the other, and nothing in the
+   suite renders a page in dark mode to catch it. */
+.chart .cellnum-deep { fill:#fff; }
+/* The row, season and grand totals. Outside the ramp on purpose: they run
+   over a wider range than any single cell, so binning them on the cells'
+   edges would paint almost every total at the top step. */
+.chart .dmtot { font-size:10px; fill:var(--ink); font-weight:600;
+  font-variant-numeric:tabular-nums; }
 /* Bump-chart points. Small and recessive at rest; the lane's hover state
    raises the whole line including its dots. */
 /* A twelve-line RANK chart is the worst case for spaghetti: every line
@@ -360,10 +437,52 @@ figure.chartwrap figcaption { color:var(--dim); font-size:.85rem;
 .chart.bump .end-label { opacity:.75; }
 .chart.bump g.lane:hover .end-label,
 .chart.bump g.lane.on .end-label { opacity:1; }
-/* The franchise pages draw ONE team against the other eleven as ghosts.
-   The ghosts are context, not content. */
+/* ONE TEAM AGAINST THE OTHER ELEVEN. The ghosts are context, not
+   content, and there are TWO EMITTERS WRITING TWO DIFFERENT SHAPES.
+   Both need a rule; neither rule can serve the other.
+
+   1. GROUP FORM -- `charts/lines.py:163-166`, on the twelve FRANCHISE
+      pages (`build.py` calls `place_lines(..., highlight=fid)` three
+      times per page). It builds `<g class="lane ghost" tabindex="0">`
+      with a plain `<polyline class="race-line">`, a `<circle
+      class="dot place-dot">` per season and an end label inside. Those
+      lanes ARE hoverable and DO carry a name, which is right there:
+      the reader is looking at one franchise among eleven rivals he may
+      want to identify.
+   2. LINE FORM -- `charts/multiples.py`, on the SIMULATIONS page. No
+      group at all: `<polyline class="race-line ghost">`, nothing else.
+      A wrapper there cost 1,716 elements carrying a word, 27% of that
+      page's element growth, and made every ghost a hover target for
+      `g.lane:hover .race-line` above -- so it thickened and took the
+      highlight hue while carrying no title, label or tooltip.
+
+   ⛔ DO NOT DELETE THE GROUP RULES AS "DEAD" WHEN THE LINE RULE LANDS.
+   That is exactly what happened: `lines.py` COMPOSES its class
+   (`lane_cls += " ghost"`), so a grep for the literal `lane ghost`
+   over `scripts/` finds nothing, and the deletion shipped GREEN --
+   396 ghost lanes across the franchise pages fell back to
+   `.race-line { opacity:.26 }` and `.place-dot { opacity:.3 }`, 2x and
+   2.3x their intended weight, with no test to notice. Grep the BUILD
+   for `class="lane ghost"`, never the source for a composed literal.
+   `test_every_ghost_form_an_emitter_writes_has_a_dimming_rule` in
+   `tests/test_site_audit.py` is the standing guard.
+
+   ⛔ TASK 7 PUT THOSE PANELS ON THE FRANCHISE PAGES AND THE PREDICTION
+   THIS PARAGRAPH CARRIED IS WRONG -- amended 2026-09-21, R207. It said
+   both forms would then appear on one page. They do not: the two solo
+   panels (`multiples.one_panel`, Elo and the scoring index) use the
+   ENVELOPE field, which draws a filled band and NO ghost lines at all,
+   so the franchise pages still write only the GROUP form and the line
+   form still lives only on Simulations. MEASURED on the built site.
+   Both rules stay: the day a franchise page wants a `ghosts` panel the
+   line form arrives with it, and deleting a rule for a form the site
+   does not draw TODAY is the exact mistake recorded above.
+
+   Specificity: the line rule is (0,4,0) against (0,3,0) for
+   `.chart.bump .race-line`, so it wins without relying on order. */
 .chart.bump g.lane.ghost .race-line { opacity:.13; }
 .chart.bump g.lane.ghost .place-dot { opacity:.13; }
+.chart.bump .race-line.ghost { opacity:.13; }
 .chart.bump g.lane.me .race-line { stroke:var(--accent); stroke-width:2.8;
   opacity:1; }
 .chart.bump g.lane.me .place-dot { fill:var(--accent); opacity:1; r:3.6;
@@ -589,6 +708,10 @@ td.fell { color:var(--c-neg); }
     --c-grid:#2c2c2a; --c-axis:#383835; --c-mark:#7d7d7d;
   }
   .chart .band-missed { opacity:.55; }
+  /* The ordinal ramp inverts here, so the deep bins are now the PALE
+     ones and the cell figure has to go back to dark ink. See the rule
+     itself for why a single fixed colour cannot serve both modes. */
+  .chart .cellnum-deep { fill:#141414; }
 }
 @media print {
   figure.chartwrap { break-inside:avoid; }
