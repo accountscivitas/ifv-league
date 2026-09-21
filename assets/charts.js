@@ -67,8 +67,14 @@
     // The running total at THAT week, which is what the line plots. The
     // week's own score is a different number by a factor of fourteen and
     // would answer a question the chart is not drawing.
+    // The POINTS panel plots a GAP, so data-v carries the running total
+    // and data-g the distance from the league average. Both are reported:
+    // a gap alone cannot answer "how many points did he have", and the
+    // total alone is the number the detrended chart deliberately stopped
+    // drawing. The wins panel sends no data-g and reads exactly as before.
     race: function (d) {
-      return [b(d.t), esc(d.v) + " " + esc(d.m),
+      return [b(d.t), esc(d.v) + " " + esc(d.m)
+                + (d.g ? ", " + esc(d.g) + " vs average" : ""),
               dim("after week " + esc(d.w))];
     },
     // The owner's complaint about the odds chart applies verbatim to any

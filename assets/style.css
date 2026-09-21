@@ -274,6 +274,12 @@ figure.chartwrap figcaption { color:var(--dim); font-size:.85rem;
 .chart .dot { stroke:var(--bg); stroke-width:2; }
 .chart .series { fill:none; stroke-width:2; stroke-linejoin:round;
   stroke-linecap:round; }
+/* The POINTS race plots a gap, so its zero rule runs through the MIDDLE of
+   the plot rather than along the bottom. An unlabelled line there reads as
+   an axis; this one is the league average, so it says so. Weighted above a
+   tick label and below a heading -- it is the one piece of text on the
+   chart that explains what the whole drawing is measured against. */
+.chart .lab.baseline { fill:var(--ink); font-weight:600; opacity:.75; }
 /* The twelve-line race: every line is recessive ink and identity comes from
    the end label, never from a hue. Hover raises one out of the pack. */
 .chart .race-line { stroke:var(--c-mark); stroke-width:1.5; opacity:.62; }
