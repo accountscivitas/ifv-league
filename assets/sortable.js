@@ -79,26 +79,8 @@
       });
   }
 
-  // The records page's "since" slider: each start year is its own pre-built
-  // page (records.html is the whole history), so moving the handle shows the
-  // year and releasing it opens that page.
-  function wireWindow() {
-    Array.prototype.forEach.call(
-      document.querySelectorAll("input[data-window]"), function (el) {
-        var out = document.getElementById(el.getAttribute("data-out"));
-        var first = el.getAttribute("min");
-        el.addEventListener("input", function () {
-          if (out) out.textContent = el.value;
-        });
-        el.addEventListener("change", function () {
-          window.location.href = el.value === first ? "records.html"
-            : "records-since-" + el.value + ".html";
-        });
-      });
-  }
   document.addEventListener("DOMContentLoaded", function () {
     Array.prototype.forEach.call(document.querySelectorAll("table"), wire);
     wireToggles();
-    wireWindow();
   });
 })();
